@@ -45,7 +45,6 @@ struct ContentView: View {
                         .tint(Color(hex: "#1893BA"))
 
 
-
                         Spacer()
                         Image("menuSymbols")
 

@@ -11,42 +11,60 @@ struct PlayMenuView: View {
             let isLandscape = geometry.size.width > geometry.size.height
 
             VStack(spacing: 16) {
-                Text("Escolha um minigame")
-                    .font(.title2)
+                Text("Escolha seu livro!")
+                    .font(.custom("LazySunday", size: 24))
                     .fontWeight(.semibold)
 
-                VStack(spacing: 12) {
-                    Button("Minigame 1") {
+                ScrollView() {
+
+                    Image("livro1")
+
+                    Button("Hipátia") {
                         onInstruction1()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.glass)
                     .controlSize(.large)
                     .frame(maxWidth: 220)
+                    .tint(Color(hex: "#DED551"))
+                    .font(.custom("LazySunday", size: 24))
+                    Spacer()
 
-                    Button("Minigame 2") {
+                    Image("livro2")
+                    Button("Ada Lovelace") {
                         onInstruction2()
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.glass)
                     .controlSize(.large)
                     .frame(maxWidth: 220)
+                    .tint(Color(hex: "E1AEE0"))
+                    .font(.custom("LazySunday", size: 24))
+                    Spacer()
 
-                    Button("Minigame 3") {
+                    Image("livro3")
+                    Button("Hedy Lamarr") {
                         onInstruction3()
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.glass)
                     .controlSize(.large)
                     .frame(maxWidth: 220)
+                    .tint(Color(hex: "8093CA"))
+                    .font(.custom("LazySunday", size: 24))
+                    Spacer()
 
-                    Button("Minigame 4") {
+                    Image("livro4")
+                    Button("Joan Clarke") {
                         onInstruction4()
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.glass)
                     .controlSize(.large)
                     .frame(maxWidth: 220)
+                    .tint(Color(hex: "C49461"))
+                    .font(.custom("LazySunday", size: 24))
+                    Spacer()
                 }
                 .frame(maxWidth: .infinity, alignment: isLandscape ? .trailing : .center)
                 .padding(.trailing, isLandscape ? max(geometry.safeAreaInsets.trailing, 24) : 0)
-
+                .scrollIndicators(.hidden)
                 Spacer()
             }
             .padding()
