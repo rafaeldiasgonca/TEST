@@ -1,19 +1,51 @@
-// filepath: /Users/rafaeldiasgoncalves/TEST/tcc/tcc/Minigames/Screen1ViewModel.swift
-// ViewModel para o Minigame 1
-
-import Foundation
+import SwiftUI
 import Combine
+import UIKit
 
 final class Screen1ViewModel: ObservableObject {
-    @Published var status: String = "Pronto"
-    @Published var score: Int = 0
+    @Published var x: Int = 0
+    @Published private(set) var y: Int = 0
+    @Published var z: Int = 0
 
-    func start() {
-        status = "Iniciado"
-        score = 0
+    @Published var currentGuess: Int? = nil
+
+    @Published var showErrorAlert: Bool = false
+
+    init() {
+        generateNewEquation()
     }
 
-    func incrementScore() {
-        score += 1
+    func generateNewEquation() {
+        x = Int.random(in: 0...9)
+        y = Int.random(in: 0...9)
+        z = x + y
+
+        currentGuess = nil
+        showErrorAlert = false
+    }
+
+    func tapDigit(_ digit: Int) {
+        currentGuess = digit
+    }
+
+    func deleteLast() {
+        currentGuess = nil
+    }
+
+    func confirm() {
+        guard let guess = currentGuess else { return }
+
+        if guess == y {
+            generateNewEquation()
+        } else {
+            showErrorAlert = true
+
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.error)
+        }
+    }
+
+    var guessText: String {
+        currentGuess.map { String($0) } ?? "?"
     }
 }
