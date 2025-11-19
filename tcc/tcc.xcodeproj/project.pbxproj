@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		DF60C2F92ECD053C00A00078 /* Exceptions for "tcc" folder in "tcc" target */ = {
+		DF4C358E2ECE21E6001CF14E /* Exceptions for "tcc" folder in "tcc" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -24,7 +24,7 @@
 		DF1280BB2EC63D960014E85C /* tcc */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				DF60C2F92ECD053C00A00078 /* Exceptions for "tcc" folder in "tcc" target */,
+				DF4C358E2ECE21E6001CF14E /* Exceptions for "tcc" folder in "tcc" target */,
 			);
 			path = tcc;
 			sourceTree = "<group>";

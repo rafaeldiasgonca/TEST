@@ -47,12 +47,11 @@ struct InstructionView: View {
                 Text(viewModel.title)
                     .fontWeight(.semibold)
                     .font(.custom("LazySunday", size: 64))
-                    .tint(Color(hex: viewModel.colorHex))
+                    .foregroundColor(Color(hex: viewModel.colorHex))
                 if !viewModel.subtitle.isEmpty {
                     Text(viewModel.subtitle)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color(hex: viewModel.colorHex))
                         .font(.custom("LazySunday", size: 32))
-                        .tint(Color(hex: viewModel.colorHex))
                 }
             }
             .padding(.top)
@@ -112,7 +111,8 @@ struct InstructionView_Previews: PreviewProvider {
                 subtitle: "e os estudos sobre a matemática",
                 imageName: "hipatiaAvatar",
                 descriptionText: "Hipátia foi uma matemática, astrônoma e filósofa grega. Ela foi a primeira mulher a estudar e ensinar matemática, além de ser uma das primeiras mulheres a estudar astronomia.  Neste jogo, você deve ajudar Hipátia a resolver uma equação matemática. Utilize o mouse para jogar.",
-                buttonAssetName: "playHipatia"
+                buttonAssetName: "playHipatia",
+                colorHex: "DED551"
             ),
             onContinue: {}
         )
