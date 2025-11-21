@@ -33,9 +33,10 @@ struct Screen3View: View {
                                 .buttonStyle(PaintedKeyButtonStyle(
                                     index: index,
                                     activeKeyIndices: $activeKeyIndices,
-                                    play: { viewModel.playKey(at: index); spawnNote(for: index) },
+                                    play: { handlePress(index) },
                                     stop: { viewModel.stopKey(at: index) }
                                 ))
+                                .disabled(viewModel.phase != .waitingInput) // só interage quando aguardando input
                                 .accessibilityLabel(Text("Tecla \(index + 1)"))
                             }
                         }
@@ -53,7 +54,41 @@ struct Screen3View: View {
                 }
             }
         }
-        .onAppear { viewModel.prepareAudio() }
+        .onAppear { viewModel.prepareAudio(); viewModel.startGame() } // inicia jogo; onChange cuidará da apresentação
+        .onChange(of: viewModel.phase) { _, newPhase in
+            if newPhase == .showingSequence { presentSequence() }
+        }
+    }
+
+    private func handlePress(_ index: Int) {
+        viewModel.playKey(at: index)
+        spawnNote(for: index)
+        viewModel.handleUserPress(index)
+        // Quando terminar de acertar sequência, o viewModel muda para .showingSequence; onChange cuida de animar próxima
+    }
+
+    private func presentSequence() {
+        guard viewModel.phase == .showingSequence else { return }
+        particles.removeAll()
+        let seq = viewModel.sequence
+        // Atraso inicial apenas na primeira rodada (sequência de tamanho 1 e score == 0)
+        let isFirstRound = (seq.count == 1 && viewModel.score == 0)
+        let initialDelay: Double = isFirstRound ? 1.2 : 0.0
+        let noteInterval: Double = 1.0 // intervalo entre notas
+        for (i, keyIndex) in seq.enumerated() {
+            let dispatchTime = initialDelay + (Double(i) * noteInterval)
+            DispatchQueue.main.asyncAfter(deadline: .now() + dispatchTime) {
+                viewModel.playKey(at: keyIndex)
+                spawnNote(for: keyIndex)
+                if i == seq.count - 1 {
+                    // Após tocar última nota, dá um tempo para animação terminar antes de habilitar input
+                    let enableDelay: Double = 1.1
+                    DispatchQueue.main.asyncAfter(deadline: .now() + enableDelay) {
+                        viewModel.sequencePresentationFinished()
+                    }
+                }
+            }
+        }
     }
 
     // Calcula posição X aproximada da nota baseado no índice da tecla
