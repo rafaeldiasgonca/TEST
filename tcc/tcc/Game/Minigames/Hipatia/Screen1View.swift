@@ -61,6 +61,7 @@ struct Screen1View: View {
         )
         .clipped()
         .padding()
+        .background(Color.white)
         .alert("Ops!", isPresented: $viewModel.showErrorAlert) {
             Button("Tentar de novo", role: .cancel) { }
         } message: {

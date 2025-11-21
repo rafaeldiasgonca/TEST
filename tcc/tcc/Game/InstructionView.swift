@@ -70,7 +70,7 @@ struct InstructionView: View {
             if !viewModel.descriptionText.isEmpty {
                 Text(viewModel.descriptionText)
                     .multilineTextAlignment(.leading)
-                    .foregroundColor(.primary)
+                    .foregroundColor(.black)
                     .font(.custom("LazySunday", size: 20))
                     .padding()
             }
@@ -98,11 +98,10 @@ struct InstructionView: View {
         }
         .padding()
         .scrollIndicators(.hidden)
-
+        .background(Color.white)
     }
 }
 
-// Preview for the generic instruction screen
 struct InstructionView_Previews: PreviewProvider {
     static var previews: some View {
         InstructionView(

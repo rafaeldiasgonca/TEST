@@ -55,6 +55,7 @@ struct ContentView: View {
                 }
 
             }
+            .background(Color.white)
             .navigationDestination(for: Route.self) { route in
                 switch route {
                 case .playMenu:
@@ -124,16 +125,4 @@ struct ContentView: View {
             }
         }
     }
-}
-
-#Preview("Portrait") {
-    ContentView()
-}
-
-#Preview("Landscape Left", traits: .landscapeLeft) {
-    ContentView()
-}
-
-#Preview("Landscape Right", traits: .landscapeRight) {
-    ContentView()
 }

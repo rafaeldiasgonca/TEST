@@ -28,6 +28,6 @@ struct Screen2View: View {
             Spacer()
         }
         .padding()
-        .navigationTitle("Minigame 2")
+        .background(Color(.white))
     }
 }
