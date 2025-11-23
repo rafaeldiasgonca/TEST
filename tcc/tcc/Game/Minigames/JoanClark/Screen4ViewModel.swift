@@ -16,6 +16,8 @@ final class Screen4ViewModel: ObservableObject {
     @Published private(set) var isWin: Bool = false
     @Published private(set) var cipherWord: String = "" // palavra cifrada para exibição
     @Published private(set) var shiftValue: Int = 0 // deslocamento do ciframento de César
+    @Published var showResultAlert: Bool = false
+    @Published var lastAttemptCorrect: Bool? = nil
 
     let alphabet: [Character] = Array("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
@@ -25,6 +27,7 @@ final class Screen4ViewModel: ObservableObject {
 
     func startNewGame() {
         isGameOver = false; isWin = false
+        showResultAlert = false; lastAttemptCorrect = nil
         secretWord = portugueseWords.randomElement() ?? "LOGICA"
         generateCipherMapping()
         userSlots = Array(repeating: nil, count: secretWord.count)
@@ -36,7 +39,7 @@ final class Screen4ViewModel: ObservableObject {
         guard !isGameOver else { return }
         if let idx = userSlots.firstIndex(where: { $0 == nil }) {
             userSlots[idx] = letter
-            if userSlots.allSatisfy({ $0 != nil }) { evaluate() }
+            // avaliação agora só ocorre via confirmAttempt
         }
     }
 
@@ -46,10 +49,16 @@ final class Screen4ViewModel: ObservableObject {
         isGameOver = false; isWin = false
     }
 
-    private func evaluate() {
+    func confirmAttempt() {
+        guard userSlots.allSatisfy({ $0 != nil }) else { return }
         let guess = String(userSlots.compactMap { $0 })
-        isGameOver = true
-        isWin = (guess == secretWord)
+        let correct = (guess == secretWord)
+        lastAttemptCorrect = correct
+        if correct {
+            isGameOver = true
+            isWin = true
+        }
+        showResultAlert = true
     }
 
     private func generateCipherMapping() {

@@ -1,4 +1,3 @@
-
 import Foundation
 import Combine
 import SwiftUI
@@ -7,19 +6,24 @@ struct Screen4View: View {
     @StateObject private var viewModel = Screen4ViewModel()
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                ForEach(viewModel.displayedKeyPairs, id: \.0) { pair in
-                    Text("\(pair.0) = \(pair.1)")
-                        .font(.custom("LazySunday", size: 40))
-                        .foregroundColor(Color.black)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 16)
-            .padding(.top, 24)
-            .padding(.bottom, 40)
 
+        ScrollView {
+            ZStack(alignment: .topTrailing){
+                Image("joanCuted")
+                    .padding(.trailing, 0)
+                    .ignoresSafeArea(edges: .trailing)
+                VStack(alignment: .leading, spacing: 12) {
+                    ForEach(viewModel.displayedKeyPairs, id: \.0) { pair in
+                        Text("\(pair.0) = \(pair.1)")
+                            .font(.custom("LazySunday", size: 40))
+                            .foregroundColor(Color.black)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 16)
+                .padding(.top, 24)
+                .padding(.bottom, 40)
+            }
             // Slots dinâmicos (mantém estilo de 10 underscores, mas mostra só até secretWord.count)
             HStack(spacing: 8) {
                 ForEach(0..<max(viewModel.userSlots.count, 10), id: \.self) { i in
@@ -55,35 +59,53 @@ struct Screen4View: View {
                     .padding(.top, 32)
             }
 
-            // Controles (remover / novo jogo) mantendo layout simples
-            HStack(spacing: 24) {
-                Button("Remover") { viewModel.removeLast() }
-                    .font(.custom("LazySunday", size: 28))
-                    .foregroundColor(.black)
-                    .disabled(viewModel.userSlots.allSatisfy { $0 == nil })
-
-                Button(viewModel.isGameOver ? "Novo Jogo" : "Reiniciar") { viewModel.startNewGame() }
-                    .font(.custom("LazySunday", size: 28))
-                    .foregroundColor(Color(hex: "#8093CA"))
-            }
-            .padding(.top, 32)
-            .padding(.bottom, 60)
+            // Removido HStack com botões de texto Remover/Reiniciar
         }
         .padding()
         .background(Color.white)
         .scrollIndicators(.hidden)
         .onAppear { viewModel.startNewGame() }
+        .alert(isPresented: $viewModel.showResultAlert) {
+            if viewModel.lastAttemptCorrect == true {
+                return Alert(title: Text("Correto!"), message: Text("Você decifrou a palavra."), dismissButton: .default(Text("Novo Jogo")) { viewModel.startNewGame() })
+            } else {
+                return Alert(title: Text("Errado"), message: Text("Tente novamente."), dismissButton: .default(Text("Fechar")) { viewModel.showResultAlert = false })
+            }
+        }
     }
 
     private func letterRow(_ assets: [String]) -> some View {
         HStack {
             ForEach(assets, id: \.self) { name in
-                Button(action: { if let ch = name.uppercased().first { viewModel.selectLetter(ch) } }) {
+                Button {
+                    switch name {
+                    case "deleteButtonMini":
+                        viewModel.removeLast()
+                    case "confirmButtonMini":
+                        viewModel.confirmAttempt()
+                    default:
+                        if name.count == 1, let ch = name.uppercased().first {
+                            viewModel.selectLetter(ch)
+                        }
+                    }
+                } label: {
                     Image(name)
+                        .opacity(disabledState(for: name) ? 0.4 : 1.0)
                 }
-                .disabled(viewModel.isGameOver || viewModel.userSlots.allSatisfy { $0 != nil })
-                .opacity(viewModel.isGameOver ? 0.5 : 1)
+                .disabled(disabledState(for: name))
             }
+        }
+    }
+
+    private func disabledState(for name: String) -> Bool {
+        switch name {
+        case "deleteButtonMini":
+            return viewModel.userSlots.allSatisfy { $0 == nil } // nada para remover
+        case "confirmButtonMini":
+            return false // sempre pode reiniciar
+        default:
+            // letras desabilitadas se jogo acabou ou todos os slots preenchidos
+            return viewModel.isGameOver || viewModel.userSlots.allSatisfy { $0 != nil }
         }
     }
 }
