@@ -24,10 +24,13 @@ final class Screen2ViewModel: ObservableObject {
     @Published var cells: [[Bool]] = []
     @Published var entry: (row: Int, col: Int) = (0, 0)
     @Published var exit: (row: Int, col: Int) = (9, 9)
-    @Published var goal: (row: Int, col: Int)? = nil
+    @Published var hasReachedExit: Bool = false
 
     func begin() { message = "Em jogo" }
-    func reset() { message = "Aguardando" }
+    func reset() { 
+        message = "Aguardando"
+        hasReachedExit = false
+    }
 
     func generateMaze() {
         var grid = Array(repeating: Array(repeating: false, count: cols), count: rows)
@@ -62,17 +65,52 @@ final class Screen2ViewModel: ObservableObject {
                 _ = stack.popLast()
             }
         }
+        // Entrada no topo
         entry = (0, 1)
-        exit = (rows - 1, cols - 2)
-        if rows > 2 && cols > 2 {
-            grid[entry.row][entry.col] = true
-            grid[entry.row + 1][entry.col] = true
-            grid[exit.row][exit.col] = true
+        grid[entry.row][entry.col] = true
+        grid[entry.row + 1][entry.col] = true
+
+        // BFS para encontrar célula alcançável mais distante para a saída
+        var dist = Array(repeating: Array(repeating: -1, count: cols), count: rows)
+        var queue: [(Int, Int)] = [(1, 1)]
+        dist[1][1] = 0
+        let stepDirs = [(-1,0),(1,0),(0,-1),(0,1)]
+        var farthestCell: (Int, Int) = (1, 1)
+        var maxDist = 0
+        
+        while !queue.isEmpty {
+            let (r, c) = queue.removeFirst()
+            for (dr, dc) in stepDirs {
+                let nr = r + dr, nc = c + dc
+                if nr >= 0, nr < rows, nc >= 0, nc < cols, grid[nr][nc], dist[nr][nc] == -1 {
+                    dist[nr][nc] = dist[r][c] + 1
+                    queue.append((nr, nc))
+                    if dist[nr][nc] > maxDist {
+                        maxDist = dist[nr][nc]
+                        farthestCell = (nr, nc)
+                    }
+                }
+            }
+        }
+        
+        // Define a saída como a célula mais distante alcançável
+        exit = farthestCell
+        grid[exit.row][exit.col] = true
+        
+        // Se a saída estiver na borda, garantir que está aberta
+        if exit.row == 0 && exit.row + 1 < rows {
+            grid[exit.row + 1][exit.col] = true
+        } else if exit.row == rows - 1 && exit.row - 1 >= 0 {
             grid[exit.row - 1][exit.col] = true
         }
+        if exit.col == 0 && exit.col + 1 < cols {
+            grid[exit.row][exit.col + 1] = true
+        } else if exit.col == cols - 1 && exit.col - 1 >= 0 {
+            grid[exit.row][exit.col - 1] = true
+        }
+        
         cells = grid
-        // Define the goal as the chosen exit (reachable)
-        goal = exit
+        hasReachedExit = false
     }
 
     func playerCell(cellSize: CGSize) -> (row: Int, col: Int) {
@@ -86,6 +124,10 @@ final class Screen2ViewModel: ObservableObject {
         guard cells[targetRow][targetCol] else { return }
         playerX = CGFloat(targetCol) * cellSize.width + playerSize.width / 2
         playerY = CGFloat(targetRow) * cellSize.height + playerSize.height / 2
+        // Check if player reached exit
+        if targetRow == exit.row && targetCol == exit.col {
+            hasReachedExit = true
+        }
     }
 
     func placePlayerOutside(mazeSize: CGSize, cellSize: CGSize) {
@@ -110,10 +152,5 @@ final class Screen2ViewModel: ObservableObject {
     func moveRight(playerSize: CGSize, cellSize: CGSize) {
         let (row, col) = playerCell(cellSize: cellSize)
         tryMove(to: row, targetCol: col + 1, cellSize: cellSize, playerSize: playerSize)
-    }
-    func hasReachedGoal(cellSize: CGSize) -> Bool {
-        guard let goal else { return false }
-        let (r,c) = playerCell(cellSize: cellSize)
-        return r == goal.row && c == goal.col
     }
 }

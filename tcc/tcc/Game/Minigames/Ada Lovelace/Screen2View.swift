@@ -46,6 +46,22 @@ struct Screen2View: View {
         }
         .frame(maxWidth: .infinity)
         .background(Color.white)
+        .alert("Parabéns!", isPresented: $viewModel.hasReachedExit) {
+            Button("Novo Labirinto") {
+                viewModel.hasReachedExit = false
+                viewModel.generateMaze()
+                let mazeSize = CGSize(
+                    width: cellSize.width * CGFloat(viewModel.cols),
+                    height: cellSize.height * CGFloat(viewModel.rows)
+                )
+                viewModel.placePlayerOutside(mazeSize: mazeSize, cellSize: cellSize)
+            }
+            Button("OK") {
+                viewModel.hasReachedExit = false
+            }
+        } message: {
+            Text("Você chegou à saída!")
+        }
     }
 }
 
