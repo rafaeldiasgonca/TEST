@@ -78,18 +78,16 @@ private struct MazeGridView: View {
                     ForEach(cells[r].indices, id: \.self) { c in
                         ZStack {
                             Rectangle()
-                                .fill(cells[r][c] ? Color.white : Color.gray.opacity(0.7))
-                            if r == entry.row && c == entry.col {
-                                Rectangle().stroke(Color.green, lineWidth: 2)
-                            }
-                            if r == exit.row && c == exit.col {
-                                Rectangle().stroke(Color.red, lineWidth: 2)
-                            }
+                                .fill(
+                                    r == entry.row && c == entry.col ? Color.green :
+                                    r == exit.row && c == exit.col ? Color.red :
+                                    Color.white
+                                )
                         }
                         .frame(width: cellSize.width, height: cellSize.height)
                         .overlay(
                             Rectangle()
-                                .stroke(Color.gray.opacity(0.35), lineWidth: 0.6)
+                                .stroke(cells[r][c] ? Color.gray.opacity(0.2) : Color(hex: "#2C5B36"), lineWidth: cells[r][c] ? 0.5 : 3.0)
                         )
                     }
                 }
