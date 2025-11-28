@@ -33,13 +33,122 @@ struct Screen2View: View {
                 }
                 .frame(height: cellSize.height * CGFloat(viewModel.rows))
 
-                HStack(spacing: 16) {
-                    Button { viewModel.moveLeft(playerSize: cellSize, cellSize: cellSize) } label: { Image("left") }
-                    Button { viewModel.moveUp(playerSize: cellSize, cellSize: cellSize) } label: { Image("up") }
-                    Button { viewModel.moveDown(playerSize: cellSize, cellSize: cellSize) } label: { Image("down") }
-                    Button { viewModel.moveRight(playerSize: cellSize, cellSize: cellSize) } label: { Image("right") }
+                // Visualização da sequência de comandos
+                VStack(spacing: 8) {
+                    Text("Sequência de Comandos:")
+                        .font(.headline)
+                    
+                    if viewModel.commandQueue.isEmpty {
+                        Text("Nenhum comando adicionado")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                            .padding(.vertical, 8)
+                    } else {
+                        let columns = [
+                            GridItem(.adaptive(minimum: 35, maximum: 35), spacing: 4)
+                        ]
+                        
+                        LazyVGrid(columns: columns, spacing: 4) {
+                            ForEach(Array(viewModel.commandQueue.enumerated()), id: \.offset) { index, command in
+                                Image(command.rawValue)
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
                 }
-                .buttonStyle(.plain)
+                .padding(.horizontal)
+
+                // Botões de setas para adicionar comandos
+                VStack(spacing: 12) {
+                    Text("Adicionar Comandos:")
+                        .font(.subheadline)
+                    
+                    HStack(spacing: 16) {
+                        Button { 
+                            viewModel.addCommand(.left)
+                        } label: { 
+                            Image("left")
+                                .opacity(viewModel.isExecuting ? 0.5 : 1.0)
+                        }
+                        .disabled(viewModel.isExecuting)
+                        
+                        Button { 
+                            viewModel.addCommand(.up)
+                        } label: { 
+                            Image("up")
+                                .opacity(viewModel.isExecuting ? 0.5 : 1.0)
+                        }
+                        .disabled(viewModel.isExecuting)
+                        
+                        Button { 
+                            viewModel.addCommand(.down)
+                        } label: { 
+                            Image("down")
+                                .opacity(viewModel.isExecuting ? 0.5 : 1.0)
+                        }
+                        .disabled(viewModel.isExecuting)
+                        
+                        Button { 
+                            viewModel.addCommand(.right)
+                        } label: { 
+                            Image("right")
+                                .opacity(viewModel.isExecuting ? 0.5 : 1.0)
+                        }
+                        .disabled(viewModel.isExecuting)
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                // Botões de controle
+                HStack(spacing: 12) {
+                    Button(action: {
+                        viewModel.executeCommands(cellSize: cellSize)
+                    }) {
+                        HStack {
+                            Image(systemName: "play.fill")
+                            Text("Play")
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
+                        .background(viewModel.commandQueue.isEmpty || viewModel.isExecuting ? Color.gray : Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                    }
+                    .disabled(viewModel.commandQueue.isEmpty || viewModel.isExecuting)
+                    
+                    Button(action: {
+                        viewModel.removeLastCommand()
+                    }) {
+                        HStack {
+                            Image(systemName: "arrow.uturn.backward")
+                            Text("Remover")
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
+                        .background(viewModel.commandQueue.isEmpty || viewModel.isExecuting ? Color.gray : Color.orange)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                    }
+                    .disabled(viewModel.commandQueue.isEmpty || viewModel.isExecuting)
+                    
+                    Button(action: {
+                        viewModel.clearCommands()
+                    }) {
+                        HStack {
+                            Image(systemName: "trash")
+                            Text("Limpar")
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
+                        .background(viewModel.commandQueue.isEmpty || viewModel.isExecuting ? Color.gray : Color.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                    }
+                    .disabled(viewModel.commandQueue.isEmpty || viewModel.isExecuting)
+                }
+                .padding(.horizontal)
             }
             .frame(maxWidth: .infinity, alignment: .center)
             .padding(.horizontal)

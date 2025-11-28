@@ -25,11 +25,81 @@ final class Screen2ViewModel: ObservableObject {
     @Published var entry: (row: Int, col: Int) = (0, 0)
     @Published var exit: (row: Int, col: Int) = (9, 9)
     @Published var hasReachedExit: Bool = false
+    @Published var commandQueue: [Direction] = []
+    @Published var isExecuting: Bool = false
 
-    func begin() { message = "Em jogo" }
-    func reset() { 
+    enum Direction: String {
+        case up, down, left, right
+    }
+
+    func begin() {
+        message = "Em jogo"
+        hasReachedExit = false
+        commandQueue = []
+        isExecuting = false
+    }
+
+    func reset() {
         message = "Aguardando"
         hasReachedExit = false
+        commandQueue = []
+        isExecuting = false
+    }
+
+    func addCommand(_ direction: Direction) {
+        guard !isExecuting else { return }
+        commandQueue.append(direction)
+    }
+
+    func clearCommands() {
+        guard !isExecuting else { return }
+        commandQueue = []
+    }
+
+    func removeLastCommand() {
+        guard !isExecuting else { return }
+        if !commandQueue.isEmpty {
+            commandQueue.removeLast()
+        }
+    }
+
+    func executeCommands(cellSize: CGSize) {
+        guard !isExecuting, !commandQueue.isEmpty else { return }
+        isExecuting = true
+        
+        // Reposicionar o player no início antes de executar
+        let mazeSize = CGSize(width: cellSize.width * CGFloat(cols), height: cellSize.height * CGFloat(rows))
+        placePlayerOutside(mazeSize: mazeSize, cellSize: cellSize)
+        hasReachedExit = false
+
+        Task { @MainActor in
+            // Pequeno delay para mostrar o player voltando ao início
+            try? await Task.sleep(nanoseconds: 200_000_000)
+            
+            for command in commandQueue {
+                try? await Task.sleep(nanoseconds: 300_000_000) // 0.3 segundos entre cada movimento
+                executeMove(command, cellSize: cellSize)
+
+                if hasReachedExit {
+                    break
+                }
+            }
+            isExecuting = false
+        }
+    }
+
+    private func executeMove(_ direction: Direction, cellSize: CGSize) {
+        let (row, col) = playerCell(cellSize: cellSize)
+        switch direction {
+        case .up:
+            tryMove(to: row - 1, targetCol: col, cellSize: cellSize, playerSize: CGSize(width: 22, height: 22))
+        case .down:
+            tryMove(to: row + 1, targetCol: col, cellSize: cellSize, playerSize: CGSize(width: 22, height: 22))
+        case .left:
+            tryMove(to: row, targetCol: col - 1, cellSize: cellSize, playerSize: CGSize(width: 22, height: 22))
+        case .right:
+            tryMove(to: row, targetCol: col + 1, cellSize: cellSize, playerSize: CGSize(width: 22, height: 22))
+        }
     }
 
     func generateMaze() {
@@ -65,52 +135,15 @@ final class Screen2ViewModel: ObservableObject {
                 _ = stack.popLast()
             }
         }
-        // Entrada no topo
         entry = (0, 1)
-        grid[entry.row][entry.col] = true
-        grid[entry.row + 1][entry.col] = true
-
-        // BFS para encontrar célula alcançável mais distante para a saída
-        var dist = Array(repeating: Array(repeating: -1, count: cols), count: rows)
-        var queue: [(Int, Int)] = [(1, 1)]
-        dist[1][1] = 0
-        let stepDirs = [(-1,0),(1,0),(0,-1),(0,1)]
-        var farthestCell: (Int, Int) = (1, 1)
-        var maxDist = 0
-        
-        while !queue.isEmpty {
-            let (r, c) = queue.removeFirst()
-            for (dr, dc) in stepDirs {
-                let nr = r + dr, nc = c + dc
-                if nr >= 0, nr < rows, nc >= 0, nc < cols, grid[nr][nc], dist[nr][nc] == -1 {
-                    dist[nr][nc] = dist[r][c] + 1
-                    queue.append((nr, nc))
-                    if dist[nr][nc] > maxDist {
-                        maxDist = dist[nr][nc]
-                        farthestCell = (nr, nc)
-                    }
-                }
-            }
-        }
-        
-        // Define a saída como a célula mais distante alcançável
-        exit = farthestCell
-        grid[exit.row][exit.col] = true
-        
-        // Se a saída estiver na borda, garantir que está aberta
-        if exit.row == 0 && exit.row + 1 < rows {
-            grid[exit.row + 1][exit.col] = true
-        } else if exit.row == rows - 1 && exit.row - 1 >= 0 {
+        exit = (rows - 1, cols - 2)
+        if rows > 2 && cols > 2 {
+            grid[entry.row][entry.col] = true
+            grid[entry.row + 1][entry.col] = true
+            grid[exit.row][exit.col] = true
             grid[exit.row - 1][exit.col] = true
         }
-        if exit.col == 0 && exit.col + 1 < cols {
-            grid[exit.row][exit.col + 1] = true
-        } else if exit.col == cols - 1 && exit.col - 1 >= 0 {
-            grid[exit.row][exit.col - 1] = true
-        }
-        
         cells = grid
-        hasReachedExit = false
     }
 
     func playerCell(cellSize: CGSize) -> (row: Int, col: Int) {
