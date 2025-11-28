@@ -20,5 +20,67 @@
             landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "95DD4A95-1367-48B5-B711-E577CB049F9B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tcc/Game/Minigames/JoanClark/Screen4View.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
+            landmarkName = "Screen4View"
+            landmarkType = "14">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "36AAE24B-031E-4E8C-925F-EBBA3A930BD4"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tcc/Game/Minigames/JoanClark/Screen4View.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
+            landmarkName = "disabledState(for:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "36AAE24B-031E-4E8C-925F-EBBA3A930BD4 - 5caf0dd49d4d8874"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "tcc.Screen4View.disabledState(for: Swift.String) -&gt; Swift.Bool"
+                  moduleName = "tcc.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rafaeldiasgoncalves/TEST/tcc/tcc/Game/Minigames/JoanClark/Screen4View.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "103"
+                  endingLineNumber = "103">
+               </Location>
+               <Location
+                  uuid = "36AAE24B-031E-4E8C-925F-EBBA3A930BD4 - ab03ac221c2788c8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;Swift.Character&gt;) -&gt; Swift.Bool in tcc.Screen4View.disabledState(for: Swift.String) -&gt; Swift.Bool"
+                  moduleName = "tcc.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rafaeldiasgoncalves/TEST/tcc/tcc/Game/Minigames/JoanClark/Screen4View.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "103"
+                  endingLineNumber = "103">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

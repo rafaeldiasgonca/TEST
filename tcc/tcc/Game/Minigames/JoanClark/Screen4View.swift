@@ -24,7 +24,7 @@ struct Screen4View: View {
                 .padding(.top, 24)
                 .padding(.bottom, 40)
             }
-            // Slots dinâmicos (mantém estilo de 10 underscores, mas mostra só até secretWord.count)
+            // Slots dinâmicos, underscores dependem do tamanho da palavra
             HStack(spacing: 8) {
                 ForEach(0..<max(viewModel.userSlots.count, 10), id: \.self) { i in
                     if i < viewModel.userSlots.count {
