@@ -42,65 +42,72 @@ struct InstructionView: View {
     }
 
     var body: some View {
-        ScrollView() {
-            VStack(spacing: 6) {
-                Text(viewModel.title)
-                    .fontWeight(.semibold)
-                    .font(.custom("LazySunday", size: 64))
-                    .foregroundColor(Color(hex: viewModel.colorHex))
-                if !viewModel.subtitle.isEmpty {
-                    Text(viewModel.subtitle)
-                        .foregroundColor(Color(hex: viewModel.colorHex))
-                        .font(.custom("LazySunday", size: 32))
-                }
-            }
-            .padding(.top)
+        ZStack {
+            // 1) Pinta a tela inteira
+            Color.white.ignoresSafeArea()
 
-            Spacer()
+            ScrollView {
+                VStack(spacing: 24) {
 
-            if !viewModel.imageName.isEmpty {
-                Image(viewModel.imageName)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxWidth: 380, maxHeight: 380)
-                    .clipped()
-                    .padding(.horizontal)
-            }
+                    // Grupo título + subtítulo
+                    VStack(spacing: 6) {
+                        Text(viewModel.title)
+                            .fontWeight(.semibold)
+                            .font(.custom("LazySunday", size: 64))
+                            .foregroundColor(Color(hex: viewModel.colorHex))
 
-            if !viewModel.descriptionText.isEmpty {
-                Text(viewModel.descriptionText)
-                    .multilineTextAlignment(.leading)
-                    .foregroundColor(.black)
-                    .font(.custom("LazySunday", size: 20))
-                    .padding()
-            }
+                        if !viewModel.subtitle.isEmpty {
+                            Text(viewModel.subtitle)
+                                .foregroundColor(Color(hex: viewModel.colorHex))
+                                .font(.custom("LazySunday", size: 32))
+                                .multilineTextAlignment(.center)
+                        }
+                    }
+                    .padding(.top)
 
-            Spacer()
-
-            HStack {
-
-                Button(action: {
-                    onContinue?()
-                }) {
-                    if !viewModel.buttonAssetName.isEmpty {
-                        Image(viewModel.buttonAssetName)
+                    if !viewModel.imageName.isEmpty {
+                        Image(viewModel.imageName)
                             .resizable()
                             .scaledToFit()
-                            .frame(height: 88)
-                    } else {
-                        Text("Começar")
+                            .frame(maxWidth: 380, maxHeight: 380)
+                            .clipped()
+                    }
+
+                    if !viewModel.descriptionText.isEmpty {
+                        Text(viewModel.descriptionText)
+                            .multilineTextAlignment(.leading)
+                            .foregroundColor(.black)
                             .font(.custom("LazySunday", size: 20))
+                            .frame(maxWidth: 500, alignment: .leading) // limita largura do texto
+                    }
+
+                    Button(action: {
+                        onContinue?()
+                    }) {
+                        if !viewModel.buttonAssetName.isEmpty {
+                            Image(viewModel.buttonAssetName)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 88)
+                        } else {
+                            Text("Começar")
+                                .font(.custom("LazySunday", size: 20))
+                        }
                     }
                 }
-
+                // Centraliza a coluna de conteúdo na tela larga
+                .frame(maxWidth: .infinity)
+                .padding()
             }
-            .padding(.horizontal)
+            // 2) ScrollView ocupando a tela toda
+            .frame(maxWidth: .infinity,
+                   maxHeight: .infinity,
+                   alignment: .top)
+            .scrollIndicators(.hidden)
         }
-        .padding()
-        .scrollIndicators(.hidden)
-        .background(Color.white)
     }
 }
+
 
 struct InstructionView_Previews: PreviewProvider {
     static var previews: some View {

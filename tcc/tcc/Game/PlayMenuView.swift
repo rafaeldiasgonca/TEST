@@ -9,45 +9,47 @@ struct PlayMenuView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            let isLandscape = geometry.size.width > geometry.size.height
-
             VStack(spacing: 24) {
                 Text("Escolha seu livro!")
                     .font(.custom("LazySunday", size: 28))
                     .fontWeight(.semibold)
 
                 ScrollView {
-                    bookBlock(
-                        image: "livro1",
-                        title: "Hipátia",
-                        color: Color(hex: "#DED551"),
-                        action: onInstruction1
-                    )
+                    VStack(spacing: 24) {
+                        bookBlock(
+                            image: "livro1",
+                            title: "Hipátia",
+                            color: Color(hex: "#DED551"),
+                            action: onInstruction1
+                        )
 
-                    bookBlock(
-                        image: "livro2",
-                        title: "Ada Lovelace",
-                        color: Color(hex: "#E1AEE0"),
-                        action: onInstruction2
-                    )
+                        bookBlock(
+                            image: "livro2",
+                            title: "Ada Lovelace",
+                            color: Color(hex: "#E1AEE0"),
+                            action: onInstruction2
+                        )
 
-                    bookBlock(
-                        image: "livro3",
-                        title: "Hedy Lamarr",
-                        color: Color(hex: "#8093CA"),
-                        action: onInstruction3
-                    )
+                        bookBlock(
+                            image: "livro3",
+                            title: "Hedy Lamarr",
+                            color: Color(hex: "#8093CA"),
+                            action: onInstruction3
+                        )
 
-                    bookBlock(
-                        image: "livro4",
-                        title: "Joan Clarke",
-                        color: Color(hex: "#C49461"),
-                        action: onInstruction4
-                    )
+                        bookBlock(
+                            image: "livro4",
+                            title: "Joan Clarke",
+                            color: Color(hex: "#C49461"),
+                            action: onInstruction4
+                        )
+                    }
+                    // largura “máxima” da coluna de livros
+                    .frame(maxWidth: 320)
+                    // ocupa a tela toda e CENTRALIZA essa coluna
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
                 .scrollIndicators(.hidden)
-                .frame(maxWidth: .infinity, alignment: isLandscape ? .trailing : .center)
-                .padding(.trailing, isLandscape ? max(geometry.safeAreaInsets.trailing, 24) : 0)
 
                 Spacer()
             }
@@ -75,6 +77,7 @@ struct PlayMenuView: View {
         }
     }
 }
+
 
 struct ColoredBookButtonStyle: ButtonStyle {
     let background: Color
