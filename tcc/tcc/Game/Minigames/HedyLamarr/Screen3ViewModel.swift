@@ -9,6 +9,12 @@ final class Screen3ViewModel: ObservableObject {
     @Published private(set) var score: Int = 0
     @Published private(set) var phase: Phase = .idle
 
+    // Alerts & high score
+    @Published var showGameOverAlert: Bool = false
+    @Published var alertMessage: String = ""
+    @Published private(set) var highScore: Int = 0
+    private let highScoreKey = "score_hedy"
+
     enum Phase { case idle, showingSequence, waitingInput, roundCompleted, gameOver }
 
     private var audioPlayers: [Int: AVAudioPlayer] = [:]
@@ -20,15 +26,22 @@ final class Screen3ViewModel: ObservableObject {
 
     private let endOfRoundDelay: Double = 1.0 // atraso após usuário completar sequência
 
+    init() {
+        highScore = UserDefaults.standard.integer(forKey: highScoreKey)
+    }
+
     func prepareAudio(preload: Bool = true) {
         configureAudioSession(); if preload { for (index, _) in soundFileNames { _ = loadPlayer(for: index) } }
     }
 
     func startGame() {
-        score = 0; sequence = [randomKeyIndex()]; currentInputIndex = 0; phase = .showingSequence
+        score = 0; sequence = [randomKeyIndex()]; currentInputIndex = 0; phase = .showingSequence; showGameOverAlert = false
     }
 
     func nextRound() {
+        // +5 pontos por rodada completada
+        score += 5
+        if score > highScore { highScore = score; UserDefaults.standard.set(highScore, forKey: highScoreKey) }
         sequence.append(randomKeyIndex()); currentInputIndex = 0; phase = .showingSequence
     }
 
@@ -37,7 +50,6 @@ final class Screen3ViewModel: ObservableObject {
     func handleUserPress(_ index: Int) {
         guard phase == .waitingInput else { return }
         if sequence[currentInputIndex] == index {
-            score += 10
             currentInputIndex += 1
             if currentInputIndex == sequence.count {
                 // rodada completa -> aplica delay antes da próxima sequência
@@ -48,6 +60,11 @@ final class Screen3ViewModel: ObservableObject {
             }
         } else {
             phase = .gameOver
+            // alerta de game over com pontos e possível recorde
+            let beatRecord = score > highScore
+            if beatRecord { highScore = score; UserDefaults.standard.set(highScore, forKey: highScoreKey) }
+            alertMessage = beatRecord ? "Você fez \(score) pontos e bateu seu recorde!" : "Você fez \(score) pontos."
+            showGameOverAlert = true
         }
     }
 

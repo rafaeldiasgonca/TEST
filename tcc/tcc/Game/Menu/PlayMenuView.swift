@@ -17,28 +17,28 @@ struct PlayMenuView: View {
                 ScrollView {
                     VStack(spacing: 24) {
                         bookBlock(
-                            image: "livro1",
+                            image: "hipatiaAvatar",
                             title: "Hipátia",
                             color: Color(hex: "#DED551"),
                             action: onInstruction1
                         )
 
                         bookBlock(
-                            image: "livro2",
+                            image: "adaAvatar",
                             title: "Ada Lovelace",
                             color: Color(hex: "#E1AEE0"),
                             action: onInstruction2
                         )
 
                         bookBlock(
-                            image: "livro3",
+                            image: "hedyAvatar",
                             title: "Hedy Lamarr",
                             color: Color(hex: "#8093CA"),
                             action: onInstruction3
                         )
 
                         bookBlock(
-                            image: "livro4",
+                            image: "joanAvatar",
                             title: "Joan Clarke",
                             color: Color(hex: "#C49461"),
                             action: onInstruction4

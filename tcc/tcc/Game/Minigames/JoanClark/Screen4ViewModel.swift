@@ -16,8 +16,14 @@ final class Screen4ViewModel: ObservableObject {
     @Published private(set) var isWin: Bool = false
     @Published private(set) var cipherWord: String = "" // palavra cifrada para exibição
     @Published private(set) var shiftValue: Int = 0 // deslocamento do ciframento de César
+
     @Published var showResultAlert: Bool = false
     @Published var lastAttemptCorrect: Bool? = nil
+    @Published private(set) var alertMessage: String = "" // restored
+
+    @Published private(set) var score: Int = 0
+    @Published private(set) var highScore: Int = 0
+    private let highScoreKey = "score_joan"
 
     let alphabet: [Character] = Array("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
@@ -25,9 +31,14 @@ final class Screen4ViewModel: ObservableObject {
         "LIVRO","CIENCIA","LOGICA","CRIPTO","AZUL","FLOR","PENSAR","MUNDO","CODIGO","SEGREDO","PRISMA","FORMULA","LISTA","JOGO","NOTA","TECLA","VALOR","RITMO","CHEFE","PORTA"
     ].filter { $0.count <= 10 }
 
+    init() { highScore = UserDefaults.standard.integer(forKey: highScoreKey) }
+
+    func resetScore() { score = 0 }
+
     func startNewGame() {
+        score = 0
         isGameOver = false; isWin = false
-        showResultAlert = false; lastAttemptCorrect = nil
+        showResultAlert = false; lastAttemptCorrect = nil; alertMessage = ""
         secretWord = portugueseWords.randomElement() ?? "LOGICA"
         generateCipherMapping()
         userSlots = Array(repeating: nil, count: secretWord.count)
@@ -55,8 +66,17 @@ final class Screen4ViewModel: ObservableObject {
         let correct = (guess == secretWord)
         lastAttemptCorrect = correct
         if correct {
+            score += 5
+            if score > highScore { highScore = score; UserDefaults.standard.set(highScore, forKey: highScoreKey) }
             isGameOver = true
             isWin = true
+            alertMessage = "Você ganhou 5 pontos! Total: \(score)."
+        } else {
+            let beatRecord = score > highScore
+            if beatRecord { highScore = score; UserDefaults.standard.set(highScore, forKey: highScoreKey) }
+            alertMessage = beatRecord ? "Você fez \(score) pontos e bateu seu recorde!" : "Você fez \(score) pontos."
+            isGameOver = true
+            isWin = false
         }
         showResultAlert = true
     }

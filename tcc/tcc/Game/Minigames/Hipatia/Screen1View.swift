@@ -64,8 +64,9 @@ struct Screen1View: View {
         .background(Color.white)
         .alert("Ops!", isPresented: $viewModel.showErrorAlert) {
             Button("Tentar de novo", role: .cancel) { }
+            Button("Novo jogo") { viewModel.generateNewEquation() }
         } message: {
-            Text("Resposta incorreta, tente novamente! 😊")
+            Text(viewModel.alertMessage)
         }
     }
 

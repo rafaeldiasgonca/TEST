@@ -58,6 +58,12 @@ struct Screen3View: View {
         .onChange(of: viewModel.phase) { _, newPhase in
             if newPhase == .showingSequence { presentSequence() }
         }
+        .alert("Fim de jogo", isPresented: $viewModel.showGameOverAlert) {
+            Button("Tentar novamente", role: .cancel) { viewModel.startGame() /* start resets to 0 in ViewModel */ }
+            Button("Novo jogo") { viewModel.startGame() }
+        } message: {
+            Text(viewModel.alertMessage)
+        }
     }
 
     private func handlePress(_ index: Int) {

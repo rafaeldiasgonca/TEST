@@ -18,6 +18,7 @@ struct ContentView: View {
         case game2
         case game3
         case game4
+        case ranking // new route
     }
 
     @State private var path: [Route] = []
@@ -44,6 +45,15 @@ struct ContentView: View {
                         .font(.custom("LazySunday", size: 24))
                         .tint(Color(hex: "#1893BA"))
 
+                        // Ranking button
+                        Button("Ranking") {
+                            path.append(.ranking)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .frame(maxWidth: 220)
+                        .font(.custom("LazySunday", size: 24))
+                        .tint(Color(hex: "#1893BA"))
 
                         Spacer()
                         Image("menuSymbols")
@@ -121,6 +131,8 @@ struct ContentView: View {
                     Screen3View()
                 case .game4:
                     Screen4View()
+                case .ranking:
+                    RankingView()
                 }
             }
         }
