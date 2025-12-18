@@ -82,6 +82,7 @@ struct InstructionView: View {
                     }
 
                     Button(action: {
+                        Haptics.trigger(.selection)
                         onContinue?()
                     }) {
                         if !viewModel.buttonAssetName.isEmpty {

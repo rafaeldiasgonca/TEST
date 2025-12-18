@@ -17,31 +17,43 @@ struct Screen1View: View {
 
                 VStack(spacing: 20) {
                     HStack(spacing: 37) {
-                        keyButton(imageName: "tecla1") { viewModel.tapDigit(1) }
-                        keyButton(imageName: "tecla2") { viewModel.tapDigit(2) }
-                        keyButton(imageName: "tecla3") { viewModel.tapDigit(3) }
+                        keyButton(imageName: "tecla1") { viewModel.tapDigit(1)
+                            Haptics.trigger(.selection)}
+                        keyButton(imageName: "tecla2") { viewModel.tapDigit(2)
+                            Haptics.trigger(.selection)}
+                        keyButton(imageName: "tecla3") { viewModel.tapDigit(3)
+                            Haptics.trigger(.selection)}
                     }
 
                     HStack(spacing: 37) {
-                        keyButton(imageName: "tecla4") { viewModel.tapDigit(4) }
-                        keyButton(imageName: "tecla5") { viewModel.tapDigit(5) }
-                        keyButton(imageName: "tecla6") { viewModel.tapDigit(6) }
+                        keyButton(imageName: "tecla4") { viewModel.tapDigit(4)
+                            Haptics.trigger(.selection)}
+                        keyButton(imageName: "tecla5") { viewModel.tapDigit(5)
+                            Haptics.trigger(.selection)}
+                        keyButton(imageName: "tecla6") { viewModel.tapDigit(6)
+                            Haptics.trigger(.selection)}
                     }
 
                     HStack(spacing: 37) {
-                        keyButton(imageName: "tecla7") { viewModel.tapDigit(7) }
-                        keyButton(imageName: "tecla8") { viewModel.tapDigit(8) }
-                        keyButton(imageName: "tecla9") { viewModel.tapDigit(9) }
+                        keyButton(imageName: "tecla7") { viewModel.tapDigit(7)
+                            Haptics.trigger(.selection)}
+                        keyButton(imageName: "tecla8") { viewModel.tapDigit(8)
+                            Haptics.trigger(.selection)}
+                        keyButton(imageName: "tecla9") { viewModel.tapDigit(9)
+                            Haptics.trigger(.selection)}
                     }
 
                     HStack(spacing: 37) {
-                        keyButton(imageName: "tecla0") { viewModel.tapDigit(0) }
+                        keyButton(imageName: "tecla0") { viewModel.tapDigit(0)
+                            Haptics.trigger(.selection)}
 
                         keyButton(imageName: "deleteButton") {
+                            Haptics.trigger(.impactLight)
                             viewModel.deleteLast()
                         }
 
                         keyButton(imageName: "confirmButton") {
+                            Haptics.trigger(.success)
                             viewModel.confirm()
                         }
                     }
@@ -64,9 +76,8 @@ struct Screen1View: View {
         .background(Color.white)
         .alert("Ops!", isPresented: $viewModel.showErrorAlert) {
             Button("Tentar de novo", role: .cancel) { }
-            Button("Novo jogo") { viewModel.generateNewEquation() }
         } message: {
-            Text(viewModel.alertMessage)
+            Text("Resposta incorreta, tente novamente! 😊")
         }
     }
 

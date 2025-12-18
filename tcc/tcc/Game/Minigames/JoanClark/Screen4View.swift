@@ -107,11 +107,14 @@ struct Screen4View: View {
                 Button {
                     switch name {
                     case "deleteButtonMini":
+                        Haptics.trigger(.impactLight)
                         viewModel.removeLast()
                     case "confirmButtonMini":
+                        Haptics.trigger(.success)
                         viewModel.confirmAttempt()
                     default:
                         if name.count == 1, let ch = name.uppercased().first {
+                            Haptics.trigger(.selection)
                             viewModel.selectLetter(ch)
                         }
                     }

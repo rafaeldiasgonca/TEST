@@ -37,6 +37,7 @@ struct ContentView: View {
                         Spacer()
 
                         Button("Começar") {
+                            Haptics.trigger(.selection)
                             path.append(.playMenu)
                         }
                         .buttonStyle(.borderedProminent)
@@ -47,6 +48,7 @@ struct ContentView: View {
 
                         // Ranking button
                         Button("Ranking") {
+                            Haptics.trigger(.selection)
                             path.append(.ranking)
                         }
                         .buttonStyle(.borderedProminent)

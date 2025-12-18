@@ -1,4 +1,3 @@
-
 import SwiftUI
 
 struct PlayMenuView: View {
@@ -67,7 +66,10 @@ struct PlayMenuView: View {
                 .scaledToFit()
                 .frame(maxWidth: 240)
 
-            Button(action: action) {
+            Button(action: {
+                Haptics.trigger(.selection)
+                action()
+            }) {
                 Text(title)
                     .font(.custom("LazySunday", size: 22))
                     .frame(maxWidth: .infinity)
